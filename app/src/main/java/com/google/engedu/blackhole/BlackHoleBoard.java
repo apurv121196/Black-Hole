@@ -76,13 +76,16 @@ public class BlackHoleBoard {
 
     // This is the inverse of the method above.
     protected Coordinates indexToCoords(int i) {
-        Coordinates result = null;
+        Coordinates result = new Coordinates(0,0);
         // TODO: Compute the column and row number for the ith location in the array.
         // The row number is the triangular root of i as explained in wikipedia:
         // https://en.wikipedia.org/wiki/Triangular_number#Triangular_roots_and_tests_for_triangular_numbers
         // The column number is i - (the number of tiles in all the previous rows).
         // This is tricky to compute correctly so use the unit test in BlackHoleBoardTest to get it
         // right.
+
+        result.y = (int)(Math.sqrt(8*i+1)-1)/2;
+        result.x = i - (int) ( (result.y) * (result.y+1) ) / 2;
         return result;
     }
 
@@ -127,6 +130,11 @@ public class BlackHoleBoard {
         // TODO: Implement this method have the computer make a move.
         // At first, we'll just invoke pickRandomMove (above) but later, you'll need to replace
         // it with an algorithm that uses the Monte Carlo method to pick a good move.
+
+        BlackHoleBoard blackHoleBoard = new BlackHoleBoard();
+        copyBoardState(this);
+        
+
         return pickRandomMove();
     }
 
@@ -147,6 +155,17 @@ public class BlackHoleBoard {
         // TODO: Implement this method to compute the final score for a given board.
         // Find the empty tile left on the board then add/substract the values of all the
         // surrounding tiles depending on who the tile belongs to.
+        for(int i=0;i<21;i++){
+            if(tiles[i]==null){
+                ArrayList<BlackHoleTile> neighbours = getNeighbors(indexToCoords(i));
+                for(BlackHoleTile j:neighbours){
+                    if(j.player==1)
+                    score+=j.value;
+                    else score-=j.value;
+                }
+                break;
+            }
+        }
         return score;
     }
 

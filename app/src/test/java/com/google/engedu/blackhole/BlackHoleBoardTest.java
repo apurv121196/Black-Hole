@@ -15,6 +15,7 @@
 
 package com.google.engedu.blackhole;
 
+import android.util.Log;
 import android.util.Pair;
 
 import org.junit.Test;
@@ -50,5 +51,8 @@ public class BlackHoleBoardTest {
     @Test
     public void testGetScore() {
         // TODO: Implement this test to verify that your getScore method is working.
+
+
+
     }
 }
