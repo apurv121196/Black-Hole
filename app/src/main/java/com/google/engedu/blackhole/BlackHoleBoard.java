@@ -15,6 +15,7 @@
 
 package com.google.engedu.blackhole;
 
+import android.content.Intent;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -131,11 +132,43 @@ public class BlackHoleBoard {
         // At first, we'll just invoke pickRandomMove (above) but later, you'll need to replace
         // it with an algorithm that uses the Monte Carlo method to pick a good move.
 
-        BlackHoleBoard blackHoleBoard = new BlackHoleBoard();
-        copyBoardState(this);
-        
+        HashMap<Integer,ArrayList<Integer>> scoreMap = new HashMap<>();
 
-        return pickRandomMove();
+        for(int i=0;i<NUM_GAMES_TO_SIMULATE;i++){
+            BlackHoleBoard copiedBlackHoleBoard = new BlackHoleBoard();
+            copyBoardState(this);
+            int k=0;
+            int move = -1;
+            while(!copiedBlackHoleBoard.gameOver()){
+                if(k==0){
+                    move = copiedBlackHoleBoard.pickRandomMove();
+                    copiedBlackHoleBoard.setValue(move);
+                    k++;
+                }
+                else copiedBlackHoleBoard.setValue(copiedBlackHoleBoard.pickRandomMove());
+//                Log.e("mytag","????");
+            }
+            if(scoreMap.get(move)==null){
+                scoreMap.put(move,new ArrayList<Integer>());
+            }
+            scoreMap.get(move).add(copiedBlackHoleBoard.getScore());
+        }
+        int bestAvgScore = -1;
+        int bestMove = -1;
+        for(int key:scoreMap.keySet()){
+            int score = 0;
+            for(int val:scoreMap.get(key)){
+                score+=val;
+            }
+            if(score/scoreMap.get(key).size() >= bestAvgScore){
+                bestMove = key;
+                bestAvgScore = score/scoreMap.get(key).size();
+            }
+        }
+        return bestMove;
+
+
+//        return pickRandomMove();
     }
 
     // Makes the next move on the board at position i. Automatically updates the current player.
